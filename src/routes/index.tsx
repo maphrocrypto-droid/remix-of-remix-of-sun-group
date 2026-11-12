@@ -34,15 +34,20 @@ function HomePage() {
 
   return (
     <SiteShell lang={lang} current="/">
+      <div aria-hidden className="intro-overlay pointer-events-none fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-background">
+        <div className="intro-sun absolute size-40 rounded-full bg-primary" />
+        <span className="intro-text relative font-display text-2xl font-semibold text-primary-foreground">SUNGROUP</span>
+      </div>
       {/* Hero */}
       <section className="relative mx-auto max-w-7xl px-6 pt-8">
-        <div className="pointer-events-none absolute -top-40 start-1/2 size-[640px] -translate-x-1/2 rounded-full bg-glow rtl:translate-x-1/2" />
+        <div className="pointer-events-none absolute -top-40 start-1/2 size-[640px] -translate-x-1/2 rounded-full bg-glow animate-glow rtl:translate-x-1/2" />
         <div className="relative mx-auto max-w-6xl text-center">
-          <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground">
+          <span style={{ ["--d" as string]: "0ms" }} className="animate-rise inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground">
             {t.hero.eyebrow}
           </span>
           <h1
-            className={`mt-6 font-display font-semibold leading-[1.2] ${
+            style={{ ["--d" as string]: "120ms" }}
+            className={`animate-rise mt-6 font-display font-semibold leading-[1.2] ${
               lang === "fa"
                 ? "whitespace-nowrap text-[6vw] sm:text-5xl lg:text-6xl"
                 : "text-3xl sm:whitespace-nowrap sm:text-[3.6vw] xl:text-5xl"
@@ -50,8 +55,8 @@ function HomePage() {
           >
             {t.hero.title}
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">{t.hero.sub}</p>
-          <div className="mt-8 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
+          <p style={{ ["--d" as string]: "240ms" }} className="animate-rise mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">{t.hero.sub}</p>
+          <div style={{ ["--d" as string]: "360ms" }} className="animate-rise mt-8 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
             <Link
               to="/contact"
               search={langSearch(lang)}
@@ -71,30 +76,34 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="relative mt-10 sm:mt-10">
+        <div className="relative mt-10 overflow-visible">
+          <div className="overflow-hidden rounded-3xl shadow-soft">
           {/* On tablet/desktop the photo height follows the screen height so the whole hero fits in the first view. */}
           <img
             src={hero}
             alt=""
             width={1920}
             height={1200}
-            className="aspect-[4/3] w-full rounded-3xl object-cover shadow-soft sm:aspect-auto sm:h-[clamp(280px,calc(100svh-30rem),600px)]"
+            className="animate-hero-img aspect-[4/5] w-full object-cover sm:aspect-auto sm:h-[clamp(280px,calc(100svh-30rem),600px)]"
           />
-          <div className="absolute -bottom-8 start-6 hidden rounded-2xl bg-card p-5 shadow-soft md:block">
-            <div className="font-display text-4xl font-semibold text-primary">{t.stats[0]!.value}</div>
-            <div className="mt-1 text-sm text-muted-foreground">{t.stats[0]!.label}</div>
           </div>
-          <div className="absolute -bottom-8 end-6 hidden items-center gap-3 rounded-2xl bg-card p-5 shadow-soft md:flex">
+          <div style={{ ["--d" as string]: "600ms" }} className="animate-rise absolute -bottom-6 start-3 rounded-2xl bg-card p-3 shadow-soft md:-bottom-8 md:start-6 md:p-5">
+            <div className="animate-float">
+            <div className="font-display text-2xl font-semibold text-primary md:text-4xl">{t.stats[0]!.value}</div>
+            <div className="mt-1 max-w-32 text-xs text-muted-foreground md:max-w-none md:text-sm">{t.stats[0]!.label}</div>
+            </div>
+          </div>
+          <div style={{ ["--d" as string]: "750ms" }} className="animate-rise absolute top-4 end-3 flex max-w-[60%] items-center gap-2 rounded-2xl bg-card/90 p-3 shadow-soft backdrop-blur md:top-auto md:-bottom-8 md:end-6 md:max-w-none md:gap-3 md:p-5">
             <MapPin className="size-5 text-primary" />
-            <span className="text-sm font-medium">{t.countries.join(" · ")}</span>
+            <span className="text-xs font-medium md:text-sm">{t.countries.join(" · ")}</span>
           </div>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="mx-auto mt-8 grid max-w-5xl grid-cols-2 gap-3 px-6 sm:grid-cols-3 md:mt-24 md:gap-4">
+      <section className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-3 px-6 sm:grid-cols-3 md:mt-24 md:gap-4">
         {t.stats.map((s, i) => (
-          <div key={i} className={`rounded-2xl bg-secondary p-4 text-center sm:p-6 ${i === 0 ? "md:hidden" : ""}`}>
+          <div key={i} className={`rounded-2xl bg-secondary p-4 text-center sm:p-6 ${i === 0 ? "hidden" : ""}`}>
             <div className="font-display text-3xl font-semibold text-primary sm:text-4xl">{s.value}</div>
             <div className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">{s.label}</div>
           </div>
