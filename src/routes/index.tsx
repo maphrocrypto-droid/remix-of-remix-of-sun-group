@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, FileSignature, Globe2, Handshake, MapPin, PackageCheck, SearchCheck, Truck } from "lucide-react";
 import hero from "@/assets/hero-shipping.jpg";
 import { ContactBlock } from "@/components/site/ContactBlock";
+import { IntroSplash, useIntroState } from "@/components/site/IntroSplash";
 import { langSearch, SiteShell } from "@/components/site/SiteShell";
 import { content, parseLang } from "@/lib/sungroup-content";
 
@@ -28,86 +29,111 @@ export const Route = createFileRoute("/")({
 
 const icons = [Handshake, SearchCheck, Globe2, PackageCheck, Truck, FileSignature];
 
+// Stat cell borders: 2x2 grid on phones, one row of four from tablet up.
+const statBorders = [
+  "",
+  "border-s",
+  "border-t sm:border-t-0 sm:border-s",
+  "border-s border-t sm:border-t-0",
+];
+
 function HomePage() {
   const lang = Route.useSearch().lang ?? "fa";
   const t = content[lang];
+  const intro = useIntroState();
+  const [titleBefore, titleAfter] = t.hero.title.split(t.hero.titleAccent);
 
   return (
     <SiteShell lang={lang} current="/">
-      <div aria-hidden className="intro-overlay pointer-events-none fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-background">
-        <div className="intro-sun absolute size-40 rounded-full bg-primary" />
-        <span className="intro-text relative font-display text-2xl font-semibold text-primary-foreground">SUNGROUP</span>
-      </div>
-      {/* Hero */}
-      <section className="relative mx-auto max-w-7xl px-6 pt-8">
-        <div className="pointer-events-none absolute -top-40 start-1/2 size-[640px] -translate-x-1/2 rounded-full bg-glow animate-glow rtl:translate-x-1/2" />
-        <div className="relative mx-auto max-w-6xl text-center">
-          <span style={{ ["--d" as string]: "0ms" }} className="animate-rise inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground">
-            {t.hero.eyebrow}
-          </span>
-          <h1
-            style={{ ["--d" as string]: "120ms" }}
-            className={`animate-rise mt-6 font-display font-semibold leading-[1.2] ${
-              lang === "fa"
-                ? "whitespace-nowrap text-[6vw] sm:text-5xl lg:text-6xl"
-                : "text-3xl sm:whitespace-nowrap sm:text-[3.6vw] xl:text-5xl"
-            }`}
-          >
-            {t.hero.title}
-          </h1>
-          <p style={{ ["--d" as string]: "240ms" }} className="animate-rise mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">{t.hero.sub}</p>
-          <div style={{ ["--d" as string]: "360ms" }} className="animate-rise mt-8 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
-            <Link
-              to="/contact"
-              search={langSearch(lang)}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5 sm:px-7 sm:py-4"
-            >
-              {t.hero.primary}
-              <ArrowRight className="size-4 rtl:rotate-180" />
-            </Link>
-            <Link
-              to="/"
-              hash="group"
-              search={langSearch(lang)}
-              className="inline-flex items-center justify-center rounded-full border border-border bg-card px-4 py-3.5 text-sm font-semibold sm:px-7 sm:py-4"
-            >
-              {t.hero.secondary}
-            </Link>
-          </div>
-        </div>
+      {intro.playing && <IntroSplash onDone={intro.done} />}
 
-        <div className="relative mt-10 overflow-visible">
-          <div className="overflow-hidden rounded-3xl shadow-soft">
-          {/* On tablet/desktop the photo height follows the screen height so the whole hero fits in the first view. */}
+      {/* Hero: one dark photo panel holding headline, actions and key figures. */}
+      <section
+        style={{ ["--intro" as string]: intro.playing ? "1.35s" : "0s" }}
+        className="mx-auto max-w-7xl px-3 pt-4 sm:px-6 sm:pt-6"
+      >
+        <div className="hero-open relative isolate flex min-h-[calc(100svh-9.5rem)] flex-col overflow-hidden rounded-[2rem] bg-inverse text-inverse-foreground shadow-soft sm:min-h-[clamp(560px,calc(100svh-8rem),800px)]">
           <img
             src={hero}
             alt=""
             width={1920}
             height={1200}
-            className="animate-hero-img aspect-[4/5] w-full object-cover sm:aspect-auto sm:h-[clamp(280px,calc(100svh-30rem),600px)]"
+            className="hero-photo absolute inset-0 -z-20 size-full object-cover object-[62%_center]"
           />
+          <div className="absolute inset-0 -z-10 bg-hero-overlay" />
+
+          <div className="flex flex-col items-start gap-2 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-8 lg:px-12">
+            <span
+              style={{ ["--d" as string]: "0ms" }}
+              className="animate-rise rounded-full border border-inverse-foreground/20 bg-inverse/35 px-3.5 py-1.5 text-xs font-medium backdrop-blur-md"
+            >
+              {t.hero.eyebrow}
+            </span>
+            <span
+              style={{ ["--d" as string]: "80ms" }}
+              className="animate-rise inline-flex items-center gap-1.5 text-xs font-medium text-inverse-foreground/80"
+            >
+              <MapPin className="size-3.5 text-highlight" />
+              {t.countries.join(" · ")}
+            </span>
           </div>
-          <div style={{ ["--d" as string]: "600ms" }} className="animate-rise absolute -bottom-6 start-3 rounded-2xl bg-card p-3 shadow-soft md:-bottom-8 md:start-6 md:p-5">
-            <div className="animate-float">
-            <div className="font-display text-2xl font-semibold text-primary md:text-4xl">{t.stats[0]!.value}</div>
-            <div className="mt-1 max-w-32 text-xs text-muted-foreground md:max-w-none md:text-sm">{t.stats[0]!.label}</div>
+
+          <div className="mt-auto px-5 pb-7 sm:px-8 sm:pb-10 lg:px-12 lg:pb-12">
+            <h1
+              style={{ ["--d" as string]: "120ms" }}
+              className={`animate-rise hero-on-dark max-w-4xl font-display font-semibold ${
+                lang === "fa"
+                  ? "text-[2.1rem] leading-[1.35] sm:text-5xl sm:leading-[1.3] lg:text-6xl xl:text-[4.25rem]"
+                  : "text-[2.1rem] leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl"
+              }`}
+            >
+              {titleBefore}
+              <span className="whitespace-nowrap text-highlight">{t.hero.titleAccent}</span>
+              {titleAfter}
+            </h1>
+            <p
+              style={{ ["--d" as string]: "240ms" }}
+              className="animate-rise hero-on-dark mt-4 max-w-xl text-sm leading-relaxed text-inverse-foreground/80 sm:mt-6 sm:text-lg"
+            >
+              {t.hero.sub}
+            </p>
+            <div
+              style={{ ["--d" as string]: "360ms" }}
+              className="animate-rise mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:flex sm:gap-3"
+            >
+              <Link
+                to="/contact"
+                search={langSearch(lang)}
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:bg-accent sm:px-7 sm:py-4"
+              >
+                {t.hero.primary}
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
+              </Link>
+              <Link
+                to="/"
+                hash="group"
+                search={langSearch(lang)}
+                className="inline-flex items-center justify-center rounded-full border border-inverse-foreground/30 bg-inverse-foreground/10 px-4 py-3.5 text-sm font-semibold backdrop-blur-md transition-colors hover:bg-inverse-foreground/20 sm:px-7 sm:py-4"
+              >
+                {t.hero.secondary}
+              </Link>
             </div>
           </div>
-          <div style={{ ["--d" as string]: "750ms" }} className="animate-rise absolute top-4 end-3 flex max-w-[60%] items-center gap-2 rounded-2xl bg-card/90 p-3 shadow-soft backdrop-blur md:top-auto md:-bottom-8 md:end-6 md:max-w-none md:gap-3 md:p-5">
-            <MapPin className="size-5 text-primary" />
-            <span className="text-xs font-medium md:text-sm">{t.countries.join(" · ")}</span>
-          </div>
-        </div>
-      </section>
 
-      {/* Stats */}
-      <section className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-3 px-6 sm:grid-cols-3 md:mt-24 md:gap-4">
-        {t.stats.map((s, i) => (
-          <div key={i} className={`rounded-2xl bg-secondary p-4 text-center sm:p-6 ${i === 0 ? "hidden" : ""}`}>
-            <div className="font-display text-3xl font-semibold text-primary sm:text-4xl">{s.value}</div>
-            <div className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">{s.label}</div>
-          </div>
-        ))}
+          <dl className="relative grid grid-cols-2 border-t border-inverse-foreground/15 bg-inverse/45 backdrop-blur-md sm:grid-cols-4">
+            <span className="hero-line absolute inset-x-0 -top-px h-px origin-left bg-highlight rtl:origin-right" />
+            {t.stats.map((s, i) => (
+              <div
+                key={s.label}
+                style={{ ["--d" as string]: `${480 + i * 90}ms` }}
+                className={`animate-rise flex flex-col-reverse border-inverse-foreground/15 px-5 py-4 sm:px-8 sm:py-6 lg:px-12 ${statBorders[i] ?? ""}`}
+              >
+                <dt className="mt-1 text-xs leading-relaxed text-inverse-foreground/70 sm:text-sm">{s.label}</dt>
+                <dd className="font-display text-2xl font-semibold sm:text-4xl">{s.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </section>
 
       {/* Services */}

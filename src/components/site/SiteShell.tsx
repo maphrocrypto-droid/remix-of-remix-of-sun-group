@@ -47,7 +47,7 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
       <header className="mx-auto max-w-7xl px-6 pt-6">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:flex sm:justify-between">
           <Link to="/" search={langSearch(lang)} aria-label={t.brand} className="min-w-0">
-            <Wordmark label={t.brandShort} />
+            <Wordmark label={t.brandShort} markId="header" />
           </Link>
           <nav className="hidden items-center gap-1 rounded-full bg-card p-1.5 text-sm shadow-soft md:flex">
             {navLinks("rounded-full px-4 py-2 transition-colors hover:bg-secondary", "bg-secondary font-medium")}

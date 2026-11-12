@@ -10,3 +10,5 @@
 - [ ] About page on mobile: replace the tall stretched photo crop with a proper photo block
 - [ ] Swap traced logo for the official logo file — waiting on user to send it
 - [x] Group companies page (/group)
+- [x] Home hero redesign: logo-only intro animation (no SUNGROUP text) that hands off to the header logo; photo, headline and stats as one cohesive, premium block on mobile and desktop
+- [ ] Backend design for the site (inquiry storage etc.) — next, after the hero is approved

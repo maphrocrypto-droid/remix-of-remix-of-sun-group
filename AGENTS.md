@@ -17,3 +17,4 @@
 - Shared mobile navigation uses a width-constrained grid of visible links instead of a horizontal scroller, keeping every section accessible without overflow in either language.
 - Retired sample URLs (`/sun`, `/holding`, `/global`) are kept as redirects to `/` so old shared links keep working.
 - Language is carried in the `?lang=en` search param (Persian/RTL is the default); pages use logical spacing (and the `rtl:` variant follows the nearest `dir`) (`ps/pe/start/end`) so both directions work.
+- The home intro (`IntroSplash`) is pure CSS on one shared timeline with the hero (`--intro` offset) and plays once per full page load, so it starts before hydration and never replays on in-app navigation.

@@ -18,6 +18,7 @@ const fa = {
   hero: {
     eyebrow: "هلدینگ بازرگانی آفتاب · از سال ۲۰۰۳",
     title: "پل مطمئن تجارت میان ایران و چین",
+    titleAccent: "ایران و چین",
     sub: "تأمین، بازرسی، حمل و ترخیص کالا با حضور مستقیم تیم ما در ایران و چین؛ از اولین مشاوره تا تحویل درِ انبار شما.",
     primary: "درخواست مشاوره",
     secondary: "آشنایی با گروه",
@@ -295,6 +296,7 @@ const en: Copy = {
   hero: {
     eyebrow: "Sun Group Holding · Since 2003",
     title: "A trusted bridge for trade between Iran and China",
+    titleAccent: "Iran and China",
     sub: "Sourcing, inspection, shipping and customs clearance, with our own teams on the ground in Iran and China — from first consultation to delivery at your door.",
     primary: "Request a consultation",
     secondary: "Explore the group",
