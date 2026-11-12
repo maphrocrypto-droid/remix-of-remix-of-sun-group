@@ -12,3 +12,8 @@
 - [x] Group companies page (/group)
 - [x] Home hero redesign: logo-only intro animation (no SUNGROUP text) that hands off to the header logo; photo, headline and stats as one cohesive, premium block on mobile and desktop
 - [ ] Backend design for the site (inquiry storage etc.) — next, after the hero is approved
+  - [ ] Save every inquiry with a tracking code (and optional photos/files of the goods)
+  - [ ] Team sign-in; first account becomes admin, admin approves other team members
+  - [ ] Team dashboard: inquiry list, status (new / reviewing / quoted), internal notes, files, weekly stats
+  - [ ] Public tracking page: customer enters code + phone to see status
+  - [ ] Email to the team on each new inquiry — waiting on a verified email domain

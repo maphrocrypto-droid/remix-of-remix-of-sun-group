@@ -45,6 +45,12 @@
   --color-inverse: var(--inverse);
   --color-inverse-foreground: var(--inverse-foreground);
   --color-highlight: var(--highlight);
+  --color-status-new: var(--status-new);
+  --color-status-reviewing: var(--status-reviewing);
+  --color-status-quoted: var(--status-quoted);
+  --color-google-surface: var(--google-surface);
+  --color-google-border: var(--google-border);
+  --color-google-text: var(--google-text);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -86,6 +92,13 @@
   --inverse: oklch(0.235 0 0);
   --inverse-foreground: oklch(0.96 0 0);
   --highlight: oklch(0.8 0.1 12);
+  --status-new: oklch(0.426 0.145 8.3);
+  --status-reviewing: oklch(0.62 0.13 70);
+  --status-quoted: oklch(0.52 0.11 155);
+  /* Google's required sign-in button colors (brand guidelines). */
+  --google-surface: #ffffff;
+  --google-border: #747775;
+  --google-text: #1f1f1f;
   --hero-overlay:
     radial-gradient(70% 55% at 100% 100%, oklch(0.426 0.145 8.3 / 0.5), transparent 70%),
     linear-gradient(

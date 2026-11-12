@@ -5,7 +5,7 @@ import { Wordmark } from "@/components/site/Logo";
 import { content, dirOf, type Lang } from "@/lib/sungroup-content";
 import { cn } from "@/lib/utils";
 
-export type SitePath = "/" | "/services" | "/group" | "/about" | "/contact";
+export type SitePath = "/" | "/services" | "/group" | "/about" | "/contact" | "/track" | "/auth" | "/dashboard" | "/team";
 
 /** Search object that keeps the chosen language when navigating. */
 export const langSearch = (lang: Lang) => (lang === "en" ? { lang: "en" as const } : {});
@@ -87,7 +87,17 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
             {navLinks("transition-colors hover:text-foreground", "text-foreground font-medium")}
           </nav>
         </div>
-        <p className="mt-6 text-xs text-muted-foreground">{t.footer}</p>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-xs text-muted-foreground">
+          <p>{t.footer}</p>
+          <div className="flex gap-5">
+            <Link to="/track" search={langSearch(lang)} className="transition-colors hover:text-foreground">
+              {t.footerLinks.track}
+            </Link>
+            <Link to="/auth" search={langSearch(lang)} className="transition-colors hover:text-foreground">
+              {t.footerLinks.team}
+            </Link>
+          </div>
+        </div>
       </footer>
     </div>
   );

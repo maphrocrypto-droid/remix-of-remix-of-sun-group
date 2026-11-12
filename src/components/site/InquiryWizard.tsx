@@ -1,9 +1,31 @@
 import { useRef, useState, type ReactNode } from "react";
-import { ArrowRight, Check, MessageCircle, Phone, Plane, RotateCcw, Ship, Sparkles, TrainFront, Truck } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import {
+  ArrowRight,
+  Check,
+  FileText,
+  Loader2,
+  MessageCircle,
+  Paperclip,
+  Phone,
+  Plane,
+  RotateCcw,
+  SearchCheck,
+  Ship,
+  Sparkles,
+  TrainFront,
+  Truck,
+  X,
+} from "lucide-react";
+import { langSearch } from "@/components/site/SiteShell";
+import { supabase } from "@/integrations/supabase/client";
+import { checkFiles, FILE_RULES, type FileIssue } from "@/lib/inquiry";
+import { submitInquiry } from "@/lib/inquiry.functions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { isValidPhone, makeReferenceCode, normalizePhone, whatsappLink } from "@/lib/inquiry";
+import { isValidPhone, normalizePhone, whatsappLink } from "@/lib/inquiry";
 import { content, type Lang } from "@/lib/sungroup-content";
 import { cn } from "@/lib/utils";
 
@@ -62,7 +84,65 @@ export function InquiryWizard({ lang, whatsappTel, callTel }: { lang: Lang; what
   const [draft, setDraft] = useState<Draft>(empty);
   const [errors, setErrors] = useState<Errors>({});
   const [code, setCode] = useState<string | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileIssue, setFileIssue] = useState<FileIssue | null>(null);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [uploadFailed, setUploadFailed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const submit = useServerFn(submitInquiry);
+
+  const addFiles = (picked: FileList | null) => {
+    if (!picked?.length) return;
+    const nextFiles = [...files, ...Array.from(picked)];
+    const issue = checkFiles(nextFiles);
+    setFileIssue(issue);
+    if (!issue) setFiles(nextFiles);
+    if (fileInput.current) fileInput.current.value = "";
+  };
+
+  /** Saves the inquiry, then uploads attachments into the slots the server reserved. */
+  const send = async () => {
+    setSending(true);
+    setSendError(null);
+    try {
+      const res = await submit({
+        data: {
+          lang,
+          service: draft.service!,
+          chinaCity: draft.city!,
+          shippingMode: draft.mode!,
+          volume: draft.size!,
+          goods: draft.goods.trim(),
+          name: draft.name.trim(),
+          phone: draft.phone,
+          note: draft.note.trim(),
+          files: files.map((f) => ({ name: f.name, type: f.type, size: f.size })),
+        },
+      });
+      if (!res.ok) {
+        setSendError(p.rateError);
+        return;
+      }
+      const results = await Promise.all(
+        res.uploads.map((u, i) =>
+          supabase.storage
+            .from("inquiry-files")
+            .uploadToSignedUrl(u.path, u.token, files[i]!, { contentType: files[i]!.type })
+            .then((r) => !r.error)
+            .catch(() => false),
+        ),
+      );
+      setUploadFailed(results.length < files.length || results.some((ok) => !ok));
+      setCode(res.code);
+      keepInView();
+    } catch {
+      setSendError(p.submitError);
+    } finally {
+      setSending(false);
+    }
+  };
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) => {
     setDraft((d) => ({ ...d, [key]: value }));
@@ -94,15 +174,20 @@ export function InquiryWizard({ lang, whatsappTel, callTel }: { lang: Lang; what
     const e = validate(step);
     setErrors(e);
     if (Object.keys(e).length) return;
-    if (step < 2) setStep(step + 1);
-    else setCode(makeReferenceCode());
-    keepInView();
+    if (step < 2) {
+      setStep(step + 1);
+      keepInView();
+    } else void send();
   };
 
   const restart = () => {
     setDraft(empty);
     setErrors({});
     setCode(null);
+    setFiles([]);
+    setFileIssue(null);
+    setSendError(null);
+    setUploadFailed(false);
     setStep(0);
     keepInView();
   };
@@ -195,6 +280,7 @@ export function InquiryWizard({ lang, whatsappTel, callTel }: { lang: Lang; what
                   </div>
                 ))}
             </dl>
+            {uploadFailed && <p className="mt-4 text-sm font-medium text-destructive">{p.uploadError}</p>}
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
               <a
                 href={whatsappLink(whatsappTel, message)}
@@ -212,6 +298,14 @@ export function InquiryWizard({ lang, whatsappTel, callTel }: { lang: Lang; what
                 <Phone className="size-4" />
                 {p.call}
               </a>
+              <Link
+                to="/track"
+                search={{ ...langSearch(lang), code: code ?? undefined }}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold"
+              >
+                <SearchCheck className="size-4" />
+                {p.trackCta}
+              </Link>
               <button
                 type="button"
                 onClick={restart}
@@ -337,10 +431,65 @@ export function InquiryWizard({ lang, whatsappTel, callTel }: { lang: Lang; what
                       className="mt-2 rounded-2xl border-border bg-background px-4 py-3 text-base md:text-sm"
                     />
                   </div>
+                  <div className="sm:col-span-2">
+                    <Label htmlFor="inq-files">{p.filesLabel}</Label>
+                    <p className="mt-1 text-xs text-muted-foreground">{p.filesHint}</p>
+                    <input
+                      ref={fileInput}
+                      id="inq-files"
+                      type="file"
+                      multiple
+                      accept={FILE_RULES.types.join(",")}
+                      className="sr-only"
+                      onChange={(e) => addFiles(e.target.files)}
+                    />
+                    {files.length > 0 && (
+                      <ul className="mt-3 grid gap-2">
+                        {files.map((f, i) => (
+                          <li key={`${f.name}-${i}`} className="flex items-center gap-3 rounded-2xl bg-secondary/60 px-4 py-2.5 text-sm">
+                            <FileText className="size-4 shrink-0 text-primary" />
+                            <span className="min-w-0 flex-1 truncate" dir="auto">
+                              {f.name}
+                            </span>
+                            <span className="shrink-0 text-xs text-muted-foreground" dir="ltr">
+                              {(f.size / 1024 / 1024).toFixed(1)} MB
+                            </span>
+                            <button
+                              type="button"
+                              aria-label={p.fileRemove}
+                              onClick={() => {
+                                setFiles(files.filter((_, j) => j !== i));
+                                setFileIssue(null);
+                              }}
+                              className="grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-background hover:text-foreground"
+                            >
+                              <X className="size-4" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {files.length < FILE_RULES.maxFiles && (
+                      <button
+                        type="button"
+                        onClick={() => fileInput.current?.click()}
+                        className="mt-3 inline-flex items-center gap-2 rounded-full border border-dashed border-primary/50 px-4 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5"
+                      >
+                        <Paperclip className="size-4" />
+                        {p.filesAdd}
+                      </button>
+                    )}
+                    {fileIssue && <p className="mt-2 text-xs font-medium text-destructive">{p.fileErrors[fileIssue]}</p>}
+                  </div>
                 </div>
               )}
             </div>
 
+            {sendError && (
+              <p role="alert" className="mt-6 rounded-2xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+                {sendError}
+              </p>
+            )}
             <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-6">
               {step > 0 ? (
                 <button
@@ -355,10 +504,11 @@ export function InquiryWizard({ lang, whatsappTel, callTel }: { lang: Lang; what
               )}
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5"
+                disabled={sending}
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-70"
               >
-                {step < 2 ? p.next : p.submit}
-                <ArrowRight className="size-4 rtl:rotate-180" />
+                {sending ? p.submitting : step < 2 ? p.next : p.submit}
+                {sending ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 rtl:rotate-180" />}
               </button>
             </div>
           </form>
