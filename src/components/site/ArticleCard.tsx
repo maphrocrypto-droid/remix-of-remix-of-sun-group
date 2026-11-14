@@ -31,7 +31,7 @@ export function ArticleCard({ lang, a, featured = false }: { lang: Lang; a: Publ
         </span>
       </div>
       <div className={cn("flex flex-1 flex-col p-6", featured && "md:justify-center md:p-10")}>
-        {a.publishedAt && <p className="text-xs text-muted-foreground">{formatDay(a.publishedAt, lang)}</p>}
+        {a.publishedAt && <p className="text-xs text-muted-foreground">{formatDay(lang, a.publishedAt.slice(0, 10))}</p>}
         <h3 className={cn("mt-2 font-display font-semibold leading-snug", featured ? "text-2xl md:text-3xl" : "text-lg")}>{a.title}</h3>
         <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{a.excerpt}</p>
         <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-primary">
