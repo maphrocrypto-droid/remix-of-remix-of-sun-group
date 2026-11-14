@@ -14,7 +14,7 @@ export function TeamBar({
   email,
 }: {
   lang: Lang;
-  current: "/dashboard" | "/team";
+  current: "/dashboard" | "/team" | "/articles";
   isAdmin: boolean;
   email: string | null;
 }) {
@@ -29,7 +29,7 @@ export function TeamBar({
     await navigate({ to: "/auth", search: langSearch(lang), replace: true });
   };
 
-  const tab = (to: "/dashboard" | "/team", label: string) => (
+  const tab = (to: "/dashboard" | "/team" | "/articles", label: string) => (
     <Link
       to={to}
       search={langSearch(lang)}
@@ -43,6 +43,7 @@ export function TeamBar({
     <div className="flex flex-wrap items-center justify-between gap-3">
       <nav className="flex gap-1 rounded-full border border-border bg-card p-1">
         {tab("/dashboard", d.tabs.inquiries)}
+        {tab("/articles", content[lang].articlesAdmin.tab)}
         {isAdmin && tab("/team", d.tabs.team)}
       </nav>
       <div className="flex min-w-0 items-center gap-3 text-sm">

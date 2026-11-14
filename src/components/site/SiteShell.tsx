@@ -5,17 +5,18 @@ import { Wordmark } from "@/components/site/Logo";
 import { content, dirOf, type Lang } from "@/lib/sungroup-content";
 import { cn } from "@/lib/utils";
 
-export type SitePath = "/" | "/services" | "/group" | "/about" | "/contact" | "/track" | "/auth" | "/dashboard" | "/team";
+export type SitePath = "/" | "/services" | "/group" | "/about" | "/contact" | "/track" | "/auth" | "/dashboard" | "/team" | "/insights" | "/articles";
 
 /** Search object that keeps the chosen language when navigating. */
 export const langSearch = (lang: Lang) => (lang === "en" ? { lang: "en" as const } : {});
 
-// Order matches content[lang].nav: services, group companies, about, contact.
+// Order matches content[lang].nav: services, group companies, about, contact, insights.
 const navTargets = [
   { to: "/services", hash: undefined },
   { to: "/group", hash: undefined },
   { to: "/about", hash: undefined },
   { to: "/contact", hash: undefined },
+  { to: "/insights", hash: undefined },
 ] as const;
 
 /** Shared header + footer for every page of the site. */
@@ -83,7 +84,7 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
             </Link>
           </div>
         </div>
-        <nav className="mt-4 grid grid-cols-[minmax(0,1fr)_minmax(0,1.65fr)_minmax(0,1.25fr)_minmax(0,1fr)] items-stretch gap-1 rounded-full border border-border bg-card p-1 text-xs sm:text-sm md:hidden">
+        <nav className="mt-4 grid grid-cols-3 items-stretch gap-1 rounded-3xl border border-border bg-card p-1 text-xs sm:text-sm md:hidden">
           {navLinks(
             "flex min-h-10 min-w-0 items-center justify-center rounded-full px-1.5 py-2 text-center leading-5 transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
             "bg-primary font-medium text-primary-foreground hover:bg-primary",
