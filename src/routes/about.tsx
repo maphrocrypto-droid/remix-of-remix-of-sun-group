@@ -34,15 +34,26 @@ function AboutPage() {
     <SiteShell lang={lang} current="/about">
       <section className="mx-auto max-w-7xl px-6 pt-8">
         <div className="relative isolate overflow-hidden rounded-[2rem] bg-inverse text-inverse-foreground shadow-soft">
+          <div className="relative aspect-[16/10] sm:hidden">
+            <img
+              src={guangzhou}
+              alt=""
+              aria-hidden="true"
+              width={1920}
+              height={1024}
+              className="size-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-inverse via-transparent to-transparent" />
+          </div>
           <img
             src={guangzhou}
             alt={lang === "fa" ? "نمای شهر گوانجو، چین" : "Guangzhou skyline, China"}
             width={1920}
             height={1024}
-            className="absolute inset-0 -z-10 size-full object-cover object-[12%_center] sm:object-center"
+            className="absolute inset-0 -z-10 hidden size-full object-cover object-center sm:block"
           />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-t from-inverse via-inverse/55 to-inverse/10" />
-          <div className="flex min-h-[520px] flex-col justify-end px-5 pb-6 pt-60 sm:pt-32 sm:px-6 sm:pb-8 sm:min-h-[clamp(460px,calc(100svh-12rem),640px)] md:px-12 md:pb-12">
+          <div className="absolute inset-0 -z-10 hidden bg-gradient-to-t from-inverse via-inverse/55 to-inverse/10 sm:block" />
+          <div className="flex flex-col justify-end px-5 pb-6 pt-2 sm:pt-32 sm:px-6 sm:pb-8 sm:min-h-[clamp(460px,calc(100svh-12rem),640px)] md:px-12 md:pb-12">
             <span className="inline-flex w-fit items-center gap-2 rounded-full bg-inverse-foreground/10 px-4 py-1.5 text-xs font-medium ring-1 ring-inverse-foreground/20 backdrop-blur">
               <MapPin className="size-3.5" />
               {p.eyebrow}
@@ -50,7 +61,7 @@ function AboutPage() {
             <h1
               className={
                 lang === "fa"
-                  ? "mt-5 whitespace-nowrap font-display text-[4.2vw] font-semibold leading-tight sm:text-4xl lg:text-5xl"
+                  ? "mt-5 font-display text-2xl font-semibold leading-snug sm:whitespace-nowrap sm:text-4xl lg:text-5xl"
                   : "mt-5 font-display text-3xl font-semibold leading-tight sm:whitespace-nowrap sm:text-[3.6vw] xl:text-5xl"
               }
             >

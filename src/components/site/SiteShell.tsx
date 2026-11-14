@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Languages } from "lucide-react";
+import { Languages, PackageSearch } from "lucide-react";
 import { Wordmark } from "@/components/site/Logo";
 import { content, dirOf, type Lang } from "@/lib/sungroup-content";
 import { cn } from "@/lib/utils";
@@ -53,6 +53,19 @@ export function SiteShell({ lang, current, children }: { lang: Lang; current: Si
             {navLinks("rounded-full px-4 py-2 transition-colors hover:bg-secondary", "bg-secondary font-medium")}
           </nav>
           <div className="flex shrink-0 items-center gap-2">
+            <Link
+              to="/track"
+              search={langSearch(lang)}
+              aria-label={t.footerLinks.track}
+              aria-current={current === "/track" ? "page" : undefined}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2.5 text-sm font-medium transition-colors hover:bg-secondary",
+                current === "/track" && "border-primary text-primary",
+              )}
+            >
+              <PackageSearch className="size-4" />
+              <span className="hidden lg:inline">{t.footerLinks.track}</span>
+            </Link>
             <Link
               to={current}
               search={langSearch(other)}

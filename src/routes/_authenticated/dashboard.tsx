@@ -255,7 +255,7 @@ function Detail({ lang, row }: { lang: Lang; row: InquiryRow }) {
           <ul className="mt-2 grid gap-2">
             {files.data.map((f) => (
               <li key={f.path}>
-                <a href={f.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-2xl bg-secondary/60 px-4 py-2.5 text-sm hover:bg-secondary">
+                <a href={f.url ?? undefined} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-2xl bg-secondary/60 px-4 py-2.5 text-sm hover:bg-secondary">
                   <FileText className="size-4 text-primary" /><span className="truncate" dir="ltr">{f.path.split("/").pop()}</span>
                 </a>
               </li>
