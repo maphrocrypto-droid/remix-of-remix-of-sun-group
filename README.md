@@ -1,6 +1,6 @@
 # sun group
 
-سلام بگو ببینم چیکارا میتونیم باهم بک نی م؟
+سلام بگو ببینم چیکارا میتونیم باهم بک نی   م؟
 
 This project was built with [Lovable](https://lovable.dev).
 
