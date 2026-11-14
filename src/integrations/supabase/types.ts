@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      articles: {
+        Row: {
+          author_id: string | null
+          body: string
+          category: Database["public"]["Enums"]["article_category"]
+          cover_url: string | null
+          created_at: string
+          excerpt: string
+          id: string
+          instagram_url: string | null
+          lang: string
+          published_at: string | null
+          slug: string
+          status: Database["public"]["Enums"]["article_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          body?: string
+          category?: Database["public"]["Enums"]["article_category"]
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: string
+          instagram_url?: string | null
+          lang?: string
+          published_at?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["article_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          category?: Database["public"]["Enums"]["article_category"]
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: string
+          instagram_url?: string | null
+          lang?: string
+          published_at?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["article_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           china_city: number | null
@@ -140,6 +191,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "staff"
+      article_category: "guide" | "news" | "market"
+      article_status: "draft" | "published"
       inquiry_status: "new" | "reviewing" | "quoted"
     }
     CompositeTypes: {
@@ -269,6 +322,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "staff"],
+      article_category: ["guide", "news", "market"],
+      article_status: ["draft", "published"],
       inquiry_status: ["new", "reviewing", "quoted"],
     },
   },
